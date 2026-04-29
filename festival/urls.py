@@ -7,4 +7,7 @@ urlpatterns = [
     path('palcos/', views.palcos_view, name='palcos'),
     path('concertos/<int:concerto_id>/', views.concerto_view, name='concerto'),
     path('concertos/<int:concerto_id>/editar/', views.editar_concerto_view, name='editar_concerto'),
+    path('concertos/<int:concerto_id>/apagar/', views.apagar_concerto, name='apagar_concerto'),
+    path('concertos/criar/', views.criar_concerto, name='criar_concerto'),
+    path('palcos/<int:palco_id>/editar/', views.editar_palco, name='editar_palco'),
 ]

@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Dia, Palco, Concerto               
 from .forms import ConcertoForm, PalcoForm
+from django.views.decorators.http import require_POST
 
 
 def index_view(request):
     return render(request, 'festival/index.html')
 
 def dias_view(request):
-    dias = Dia.objects.all()
+    dias = Dia.objects.all().order_by('data')
 
     context = {'dias': dias}
 
@@ -47,3 +48,34 @@ def editar_concerto_view(request, concerto_id):
     }
 
     return render(request, 'festival/editar_concerto.html', context)
+
+@require_POST
+def apagar_concerto(request, concerto_id):
+    concerto = get_object_or_404(Concerto, pk=concerto_id)
+    concerto.delete()
+    return redirect('dias')
+
+from .forms import ConcertoForm
+
+def criar_concerto(request):
+    if request.method == 'POST':
+        form = ConcertoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('dias') # Redireciona para a lista de dias/cartaz
+    else:
+        form = ConcertoForm()
+    
+    return render(request, 'festival/criar_concerto.html', {'form': form})
+
+def editar_palco(request, palco_id):
+    palco = get_object_or_404(Palco, pk=palco_id)
+    if request.method == 'POST':
+        form = PalcoForm(request.POST, request.FILES, instance=palco)
+        if form.is_valid():
+            form.save()
+            # Altere aqui para 'palcos' (ou o nome que definiu no urls.py)
+            return redirect('palcos')
+    else:
+        form = PalcoForm(instance=palco)
+    return render(request, 'festival/editar_palco.html', {'form': form, 'palco': palco})

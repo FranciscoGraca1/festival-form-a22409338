@@ -7,9 +7,10 @@ class Banda(models.Model):
         return self.nome
 
 class Palco(models.Model):
-    nome = models.CharField(max_length=100)
-    capacidade = models.PositiveIntegerField(default=0)
-    imagem = models.ImageField(upload_to="palcos/", null=True, blank=True)
+    nome = models.CharField(max_length=50)
+    capacidade = models.IntegerField()
+    imagem = models.ImageField(upload_to='palcos/', blank=True, null=True)
+    acessibilidade_mobilidade_reduzida = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nome

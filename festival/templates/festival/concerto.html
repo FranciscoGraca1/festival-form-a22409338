@@ -1,15 +1,19 @@
 {% extends 'festival/layout.html' %}
 
 {% block content %}
-    
     <article class="card">
         <h2>{{ concerto.banda.nome }}</h2>
         <p><strong>Dia:</strong> {{ concerto.dia }}</p>
         <p><strong>Hora:</strong> {{ concerto.hora }}</p>
         <p><strong>Palco:</strong> {{ concerto.palco }}</p>
+        
+        <!-- Botão Editar -->
         <p><a href="{% url 'editar_concerto' concerto.id %}" class="btn">Editar este concerto</a></p>
+        
+        <!-- Botão Apagar -->
+        <form action="{% url 'apagar_concerto' concerto.id %}" method="POST" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="btn">Apagar concerto</button>
+        </form>
     </article>
-
-    
 {% endblock %}
-    

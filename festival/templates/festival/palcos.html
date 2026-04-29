@@ -1,25 +1,47 @@
 {% extends 'festival/layout.html' %}
 
 {% block content %}
-    
+<section>
+    {% for palco in palcos %}
+        <article class="card" style="margin-bottom: 40px; padding: 25px; position: relative;">
+            
+            <!-- Link de edição que cobre o cabeçalho (Lógica dos Dias) -->
+            <a href="{% url 'editar_palco' palco.id %}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <h2 style="margin: 0; font-size: 1.5em;">
+                        {{ palco.nome }} 
+                        <span style="font-weight: normal; color: #a0aec0; font-size: 0.8em;">
+                            ({{ palco.capacidade }} pessoas · 
+                            {{ palco.concertos.count }} concertos 
+                            {% if palco.acessibilidade_mobilidade_reduzida %} · ♿{% endif %})
+                        </span>
+                    </h2>
+                    <!-- O botão agora é apenas visual, o link está no cabeçalho todo -->
+                    <span class="btn" style="padding: 5px 15px; font-size: 0.8em;">Editar palco</span>
+                </div>
 
-{% for palco in palcos %}
-<div style="display: flex; align-items: center; gap: 12px;">
-    <h2>{{ palco.nome }}</h2>
-    <a href="" class="btn">Editar palco</a>
-</div>
+                <!-- Imagem com tamanho controlado -->
+                {% if palco.imagem %}
+                    <img src="{{ palco.imagem.url }}" alt="{{ palco.nome }}" 
+                         style="width: 450px; max-width: 100%; border-radius: 12px; display: block; margin-bottom: 25px;">
+                {% endif %}
+            </a>
 
-    {% if palco.imagem %}
-        <p><img src="{{ palco.imagem.url }}" alt="Imagem do palco {{ palco.nome }}" style="max-width: 320px; width: 100%; border-radius: 8px; border: 1px solid #2b3a55;"></p>
-    {% endif %}
-
-    {% for concerto in palco.concertos.all %}
-        <article class="card">
-            <a href="{% url 'concerto' concerto.id %}">{{ concerto.banda.nome }} - {{ concerto.dia }}, {{ concerto.hora }}</a>
+            <!-- Lista de Concertos (Fora do link de editar para permitir clicar nos concertos individualmente) -->
+            <div class="concertos-list">
+                {% for concerto in palco.concertos.all %}
+                    <a href="{% url 'concerto' concerto.id %}" style="text-decoration: none; display: block;">
+                        <div style="background: #1a222e; border: 1px solid #2d3748; padding: 15px 20px; border-radius: 10px; margin-bottom: 10px; color: #edf2f7; transition: 0.3s;" 
+                             onmouseover="this.style.backgroundColor='#2d3748'" onmouseout="this.style.backgroundColor='#1a222e'">
+                            <strong>{{ concerto.banda.nome }}</strong> - {{ concerto.dia.data|date:"Y-m-d" }}, {{ concerto.hora|time:"H:i" }}
+                        </div>
+                    </a>
+                {% empty %}
+                    <p style="color: #a0aec0; font-style: italic;">Sem concertos agendados para este palco.</p>
+                {% endfor %}
+            </div>
+            
         </article>
     {% endfor %}
-
-{% endfor %}
-
+</section>
 {% endblock %}
-    
